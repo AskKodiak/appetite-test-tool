@@ -14,6 +14,7 @@ This command line tool dynamically creates a mocha test suite to unit test appet
 
 * Clone the repository
 * `npm install`
+* Create a [config.json](#configuration) file
 
 ## Configuration
 
@@ -65,4 +66,4 @@ This tool dynamically creates a test suite based on the contents of a CSV file. 
 
 To execute the tests run `npm test`.
 
-Alternatively, a [VSCode] launch configuration has also been provided to run and debug within VSCode. Use the the launcher called `Test` to run.
+Alternatively, a [VSCode](https://code.visualstudio.com) launch configuration has also been provided to run and debug within VSCode. Use the the launcher called `Test` to run.

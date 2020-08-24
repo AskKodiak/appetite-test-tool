@@ -1,0 +1,21 @@
+{
+  "name": "appetite-test-tool",
+  "version": "1.0.0",
+  "description": "a simple command line tool to test travelers appetite",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 999999 --exit  --recursive --delay"
+  },
+  "author": "mike@askkodiak.com",
+  "license": "MIT",
+  "dependencies": {
+    "ask-kodiak-sdk": "^2.0.3",
+    "boolean": "^3.0.1",
+    "chai": "^4.2.0",
+    "colors": "^1.4.0",
+    "csvtojson": "^2.0.10",
+    "eslint": "^7.7.0",
+    "joi": "^17.2.0",
+    "mocha": "^8.1.1"
+  }
+}

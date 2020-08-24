@@ -1,0 +1,3 @@
+code,geo,entityType,annualPayroll,annualRevenue,fullTimeEmployees,partTimeEmployees,tiv,vehicles,locations,buildings,squareFootage,buildingAge,yearsInBusiness,yearsInIndustry,expectInAppetite,hasAllTags,containsAllTags,hasAnyTags
+44-45,US-MI,,,,10,,,,,,,,,,TRUE,"red, blue, green"
+111,US-VA,,,,,,,,,,,,,,FALSE,

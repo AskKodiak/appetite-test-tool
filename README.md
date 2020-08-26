@@ -20,6 +20,14 @@ This command line tool dynamically creates a mocha test suite to unit test appet
 
 This tool requires your credentials for the Ask Kodiak API (specifically your Group ID (`gid`) and a Read Key (`key`)) and a target product id (`pid`) for the tests. Add these values to `config.json`. An example configuration file, `example-config.json` has been included for your convenience. Add your `gid` and `key` and `pid` and then save-as `config.json`. Optionally, include also a `url` property to specify target Ask Kodiak API node. In most cases this value need not be set.
 
+```json
+{
+  "gid": "YOUR-GROUP-ID",
+  "key": "YOUR-API-READ-KEY",
+  "pid": "TARGET-PRODUCT-ID"
+}
+```
+
 ## Tests File
 
 This tool dynamically creates a test suite based on the contents of a CSV file. That CSV file should contain 1-n example requests and expected results for each. An example test file has been included with this project as `example-tests.csv`. Add your tests cases and then save-as `tests.csv`.

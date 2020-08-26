@@ -16,6 +16,7 @@
     "ask-kodiak-sdk": "^2.0.3",
     "boolean": "^3.0.1",
     "chai": "^4.2.0",
+    "cli-progress": "^3.8.2",
     "colors": "^1.4.0",
     "csvtojson": "^2.0.10",
     "eslint": "^7.7.0",

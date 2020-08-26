@@ -13,6 +13,8 @@ const csv = require('csvtojson'),
         return obj;
       })(),
       Joi = require('joi'),
+      cliProgress = require('cli-progress'),
+      progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic),
       ak = require('ask-kodiak-sdk'),
       { boolean } = require('boolean'),
       key = config.key,
@@ -139,7 +141,15 @@ var validateTest = (test) => {
     },
     runTests = async () => {
       var results = [],
-          tests = await getTestsArr();
+          tests = await getTestsArr(),
+          rows = tests.length,
+          i = 0;
+
+      // eslint-disable-next-line no-console
+      console.info(`checking ${rows} rows. please stand by.\n`);
+
+      // start the progress bar with a total value of 200 and start value of 0
+      progressBar.start(rows, 0);
 
       for (const test of tests) {
         let response = await runTest(test);
@@ -149,7 +159,13 @@ var validateTest = (test) => {
           test: test,
           response: response
         });
+
+        i++;
+        progressBar.update(i);
+
       }
+
+      progressBar.stop();
 
       return results;
 

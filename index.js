@@ -18,8 +18,14 @@ const csv = require('csvtojson'),
       key = config.key,
       gid = config.gid,
       pid = config.pid,
+      url = config.url,
       init = (() => { // eslint-disable-line no-unused-vars
-        ak.init(gid, key); // init ask kodiak api
+        if (url) {
+          ak.init(gid, key, url); // init ask kodiak api with url
+        } else {
+          ak.init(gid, key); // init ask kodiak api
+        }
+
       })(),
       testsPath = './tests.csv',
       testSchema = Joi.object({

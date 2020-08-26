@@ -164,9 +164,15 @@ var validateTest = (test) => {
           i++;
           progressBar.update(i);
         } catch (error) {
+          let rowNum = i + 2;
           progressBar.stop();
-          // eslint-disable-next-line no-console
-          console.error(`ERR in row ${i + 2}: ${error.message}`);
+          if (error.message === '404 - {"message":"class code not found.","code":"class code not found."}') {
+            // eslint-disable-next-line no-console
+            console.error(`ERR in row ${rowNum}: ${test.code} is not a valid NAICS Code.`);
+          } else {
+            // eslint-disable-next-line no-console
+            console.error(`ERR in row ${rowNum}: ${error.message}`);
+          }
           process.exit(-1);
         }
 

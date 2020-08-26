@@ -152,16 +152,23 @@ var validateTest = (test) => {
       progressBar.start(rows, 0);
 
       for (const test of tests) {
-        let response = await runTest(test);
+        try {
+          let response = await runTest(test);
 
-        results.push({
-          pid: pid,
-          test: test,
-          response: response
-        });
+          results.push({
+            pid: pid,
+            test: test,
+            response: response
+          });
 
-        i++;
-        progressBar.update(i);
+          i++;
+          progressBar.update(i);
+        } catch (error) {
+          progressBar.stop();
+          // eslint-disable-next-line no-console
+          console.error(`ERR in row ${i + 2}: ${error.message}`);
+          process.exit(-1);
+        }
 
       }
 

@@ -21,6 +21,10 @@ const tester = require('../index'),
           response = result.response,
           products = response.products,
           product = products[0] || {},
+          meta = product.meta || {},
+          ruleStats = meta['rule-stats'] || {},
+          triggered = ruleStats.triggered || {},
+          ruleIds = Object.keys(triggered),
           requestParams = test.apiOpts,
           responseFilters = response.filters,
           expectInAppetite = test.expectInAppetite,
@@ -55,7 +59,13 @@ const tester = require('../index'),
 
             return false;
 
-          })(); // iife - boolean - this row has some kind of tag test
+          })(), // iife - boolean - this row has some kind of tag test
+          getTriggeredRuleIdsString = () => {
+            if (ruleIds.length > 0) {
+              return `(triggered rule id(s): ${ruleIds.toString()})`;
+            }
+            return '';
+          };
 
     describe(`row ${rowNum}`, () => {
 
@@ -75,7 +85,7 @@ const tester = require('../index'),
 
       });
 
-      describe('response', () => {
+      describe(`response ${ getTriggeredRuleIdsString() }`, () => {
 
         describe('appetite', () => {
           if (expectInAppetite) {

@@ -153,6 +153,8 @@ var validateTest = (test) => {
       progressBar.start(rows, 0);
 
       for (const test of tests) {
+        let rowNum = i + 2; // zero based, accommodate header
+
         try {
           let response = await runTest(test);
 
@@ -160,13 +162,12 @@ var validateTest = (test) => {
             pid: pid,
             test: test,
             response: response,
-            rowNum: i + 2 // zero based, add header
+            rowNum: rowNum
           });
 
           i++;
           progressBar.update(i);
         } catch (error) {
-          let rowNum = i + 1;
           progressBar.stop();
           if (error.message === '404 - {"message":"class code not found.","code":"class code not found."}') {
             // eslint-disable-next-line no-console

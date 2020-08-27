@@ -19,13 +19,12 @@ const tester = require('../index'),
           test = result.test,
           code = test.code, //naics code/groupNum/hash associated with test
           testPid = result.pid,
+          gid = result.gid,
+          app = result.app, //used to build url
           response = result.response,
           products = response.products,
           product = products[0] || {},
-          meta = product.meta || {},
-          ruleStats = meta['rule-stats'] || {},
-          triggered = ruleStats.triggered || {},
-          ruleIds = Object.keys(triggered),
+          triggered = result.triggered,
           requestParams = test.apiOpts,
           responseFilters = response.filters,
           expectInAppetite = test.expectInAppetite,
@@ -49,22 +48,20 @@ const tester = require('../index'),
 
           })(), // iife - array. turn the array of tag objects (if any) into an array of tag string values for later testing
           hasTagTest = (() => {
-            var tagTestTypes = [hasAnyTags, containsAllTags, hasAllTags, doesNotHaveAnyTags, doesNotHaveAllTags, doesNotHaveTags];
+            var tagTestTypes = ['hasAnyTags', 'containsAllTags', 'hasAllTags', 'doesNotHaveAnyTags', 'doesNotHaveAllTags', 'doesNotHaveTags'],
+                hasTagTest = false;
 
-            for (let ix = 0; i < tagTestTypes.length; ix++) {
-              let tagTest = tagTestTypes[ix];
-
-              if (typeof test[tagTest] !== undefined) {
-                //found one.
-                return true;
+            tagTestTypes.forEach(type => {
+              if (typeof test[type] !== 'undefined') {
+                hasTagTest = true;
               }
-            }
+            });
 
-            return false;
+            return hasTagTest;
 
           })(); // iife - boolean - this row has some kind of tag test
 
-    describe(`row ${rowNum}`, () => {
+    describe(`test file row ${rowNum}`, () => {
 
       describe('request', () => {
         describe('parameters', () => {
@@ -92,29 +89,23 @@ const tester = require('../index'),
         // output the ids of triggered rules to the screen.
         describe('triggered rules', () => {
           // if rules were triggered show them in the output
-          if (ruleIds.length > 0) {
-            ruleIds.forEach(function (ruleId) {
-              it(`rule id: ${ruleId}`, () => {
+          if (triggered.length > 0) {
+            triggered.forEach(function (ruleId) {
+              it(`${app}/#/admin/group/${gid}/products/${testPid}/rules/${ruleId}`, () => {
                 assert.isTrue(true);
               });
             });
           } else {
             it('none', () => {
-              assert.isEmpty(ruleIds);
+              assert.isEmpty(triggered);
             });
           }
         });
 
-        describe('appetite', () => {
-          if (expectInAppetite) {
-            it('in appetite', () => {
-              assert.isTrue(inAppetite);
-            });
-          } else {
-            it('not in appetite', () => {
-              assert.isFalse(inAppetite);
-            });
-          }
+        describe(`${expectInAppetite ? 'in' : 'not in'} appetite`, () => {
+          it('expected result', () => {
+            assert.equal(inAppetite, expectInAppetite);
+          });
         });
 
         if (hasTagTest) {
@@ -122,15 +113,13 @@ const tester = require('../index'),
             // Asserts that product has all and only all of the tags provided.
             if (hasAllTags) {
               if (hasAllTags.length > 0) {
+                let responseTagsStr = responseTags.sort().toString(),
+                    expectedTagsStr = hasAllTags.sort().toString(),
+                    result = expectedTagsStr === responseTagsStr;
 
-                for (let ix = 0; ix < responseTags.length; ix++) {
-                  let responseTagVal = responseTags[ix],
-                      expected = hasAllTags.indexOf(responseTagVal) > -1;
-
-                  it(`Product has all and only all of the tags '${hasAllTags.toString()}': ${responseTagVal}`, () => {
-                    assert.isTrue(expected);
-                  });
-                }
+                it(`Product has all and only all of the tags '${expectedTagsStr}'`, () => {
+                  assert.isTrue(result);
+                });
 
               }
             }
@@ -138,14 +127,20 @@ const tester = require('../index'),
             if (containsAllTags) {
               if (containsAllTags.length > 0) {
                 // check each tag
-                for (let ix = 0; ix < containsAllTags.length; ix++) {
-                  let containsTagVal = containsAllTags[ix],
-                      tagFound = responseTags.indexOf(containsTagVal) > -1;
+                let foundAllTags = true;
 
-                  it(`product has all of the tags: '${containsTagVal}'`, () => {
-                    assert.isTrue(tagFound);
-                  });
+                for (let ix = 0; ix < containsAllTags.length; ix++) {
+                  let containsTagVal = containsAllTags[ix];
+
+                  if (responseTags.indexOf(containsTagVal) === -1) {
+                    foundAllTags = false;
+                  }
+
                 }
+
+                it(`product has all of the tags: '${containsAllTags.sort().toString()}'`, () => {
+                  assert.isTrue(foundAllTags);
+                });
               }
             }
             //Asserts that product has at least one of the tags provided.

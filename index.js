@@ -22,6 +22,7 @@ const csv = require('csvtojson'),
       gid = config.gid,
       pid = config.pid,
       url = config.url,
+      app = config.app || 'https://app.askkodiak.com', // web app base url to build links in results
       init = (() => { // eslint-disable-line no-unused-vars
         if (url) {
           ak.init(gid, key, url); // init ask kodiak api with url
@@ -96,7 +97,9 @@ var validateTest = (test) => {
             validationResults = validateTest(test);
 
         if (validationResults.error) {
-          throw new Error(`Error in Row ${rowNum}: ${validationResults.error.message}`);
+          // eslint-disable-next-line no-console
+          console.log(`\nError in test file, row ${rowNum}: ${validationResults.error.message}\n`.bold.red);
+          process.exit(-1);
         }
 
       }
@@ -104,7 +107,7 @@ var validateTest = (test) => {
       return tests;
     },
     setApiOpts = (test) => {
-      var props = { // test props mapped to API keys
+      var optionalProps = { // test props mapped to API keys
             'geo': 'geos',
             'entityType': 'entityTypes',
             'annualPayroll': 'annualPayroll',
@@ -123,9 +126,18 @@ var validateTest = (test) => {
             products: pid // all tests scoped to individual product
           };
 
-      Object.keys(props).forEach((testKey) => {
+      // assign test Naics to correct property depending on what it is (code vs group)
+      if (test.code.length === 32) {
+        // this is an md5 hash
+        opts.naicsCodes = test.code;
+      } else {
+        // this is not an md5 hash (e.g. a 2-6 digit code)
+        opts.naicsGroups = test.code;
+      }
+
+      Object.keys(optionalProps).forEach((testKey) => {
         if (typeof test[testKey] !== 'undefined') {
-          let apiKey = props[testKey];
+          let apiKey = optionalProps[testKey];
           opts[apiKey] = test[testKey];
         }
       });
@@ -136,9 +148,13 @@ var validateTest = (test) => {
       const setOpts = (() => { // eslint-disable-line no-unused-vars
               setApiOpts(test);
             })(),
-            results = await ak.productsForCode(test.code, test.apiOpts);
+            productsForCodeResults = await ak.productsForCode(test.code, test.apiOpts), // render product in list given these conditions.
+            productResults = await ak.getProduct(pid, test.apiOpts); // render product in singleton view under these conditions. will help us identify rules that eliminated the product from former calls
 
-      return results;
+      return {
+        forCode: productsForCodeResults,
+        getProduct: productResults
+      };
     },
     runTests = async () => {
       var results = [],
@@ -149,19 +165,25 @@ var validateTest = (test) => {
       // eslint-disable-next-line no-console
       console.info(`\nchecking ${colors.green(rows)} rows. please stand by.\n`);
 
-      // start the progress bar with a total value of 200 and start value of 0
+      // start the progress bar with a total value of row count and start value of 0
       progressBar.start(rows, 0);
 
       for (const test of tests) {
         let rowNum = i + 2; // zero based, accommodate header
 
         try {
-          let response = await runTest(test);
+          let response = await runTest(test),
+              productMeta = response.getProduct.meta || {},
+              ruleStats = productMeta['rule-stats'] || {},
+              triggered = Object.keys(ruleStats.triggered || {}); //get these from the single product call so we get the rules that eliminate as well as those that alter.
 
           results.push({
             pid: pid,
+            gid: gid,
+            app: app,
             test: test,
-            response: response,
+            response: response.forCode,
+            triggered: triggered,
             rowNum: rowNum
           });
 

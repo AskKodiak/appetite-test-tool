@@ -6,6 +6,10 @@ This command line tool dynamically creates a mocha test suite to unit test appet
 
 *tldr;* Configuration (api credentials) go in config.json. Example at `example-config.json`. Test cases go in `tests.csv`. Example at `example-tests.csv`. Run using `npm test`.
 
+## IMPORTANT: Product Permissions
+
+This tool uses the Ask Kodiak API which acts as a member of your *staff*. The product being tested must be available to a staff account!
+
 ## Prerequisites
 
 * Install [Node.js](https://nodejs.org/) version 12 or later following the installation directions provided by Node for your platform.

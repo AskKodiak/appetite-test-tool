@@ -15,6 +15,7 @@ This command line tool dynamically creates a mocha test suite to unit test appet
 * Clone the repository
 * `npm install`
 * Create a [config.json](#configuration) file
+* Create a [tests.csv](#tests-file) file
 
 ## Configuration
 

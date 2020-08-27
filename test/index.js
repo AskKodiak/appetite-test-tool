@@ -14,8 +14,8 @@ const tester = require('../index'),
   }
 
   for (let i = 0; i < results.length; i++) {
-    const rowNum = i + 1,
-          result = results[i],
+    const result = results[i],
+          rowNum = result.rowNum,
           test = result.test,
           testPid = result.pid,
           response = result.response,
@@ -40,18 +40,20 @@ const tester = require('../index'),
             var tagVals = [],
                 responseTagsObjArr = responseMeta.tags || [];
 
-            for (let i = 0; i < responseTagsObjArr.length; i++) {
-              tagVals.push(responseTagsObjArr[i].text); //take string value of tag and push it to the array
-            }
+            responseTagsObjArr.forEach(responseTabObj => {
+              tagVals.push(responseTabObj.text); //take string value of tag and push it to the array
+            });
 
             return tagVals;
 
           })(), // iife - array. turn the array of tag objects (if any) into an array of tag string values for later testing
           hasTagTest = (() => {
-            var tests = [hasAnyTags, containsAllTags, hasAllTags, doesNotHaveAnyTags, doesNotHaveAllTags, doesNotHaveTags];
+            var tagTestTypes = [hasAnyTags, containsAllTags, hasAllTags, doesNotHaveAnyTags, doesNotHaveAllTags, doesNotHaveTags];
 
-            for (let i = 0; i < tests.length; i++) {
-              if (typeof tests[i] !== undefined) {
+            for (let ix = 0; i < tagTestTypes.length; ix++) {
+              let tagTest = tagTestTypes[ix];
+
+              if (typeof test[tagTest] !== undefined) {
                 //found one.
                 return true;
               }

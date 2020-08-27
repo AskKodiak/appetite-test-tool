@@ -158,13 +158,14 @@ var validateTest = (test) => {
           results.push({
             pid: pid,
             test: test,
-            response: response
+            response: response,
+            rowNum: i + 2 // zero based, add header
           });
 
           i++;
           progressBar.update(i);
         } catch (error) {
-          let rowNum = i + 2;
+          let rowNum = i + 1;
           progressBar.stop();
           if (error.message === '404 - {"message":"class code not found.","code":"class code not found."}') {
             // eslint-disable-next-line no-console

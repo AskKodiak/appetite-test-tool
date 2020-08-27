@@ -17,6 +17,7 @@ const tester = require('../index'),
     const result = results[i],
           rowNum = result.rowNum,
           test = result.test,
+          code = test.code, //naics code/groupNum/hash associated with test
           testPid = result.pid,
           response = result.response,
           products = response.products,
@@ -61,18 +62,17 @@ const tester = require('../index'),
 
             return false;
 
-          })(), // iife - boolean - this row has some kind of tag test
-          getTriggeredRuleIdsString = () => {
-            if (ruleIds.length > 0) {
-              return `(triggered rule id(s): ${ruleIds.toString()})`;
-            }
-            return '';
-          };
+          })(); // iife - boolean - this row has some kind of tag test
 
     describe(`row ${rowNum}`, () => {
 
       describe('request', () => {
         describe('parameters', () => {
+          describe('naics', () => {
+            it(code, () => {
+              assert.equal(true, true); // here just to log the code to output to help the user
+            });
+          });
           Object.keys(requestParams).forEach((reqKey) => {
             let reqVal = requestParams[reqKey],
                 resVal = responseFilters[reqKey];
@@ -87,7 +87,23 @@ const tester = require('../index'),
 
       });
 
-      describe(`response ${ getTriggeredRuleIdsString() }`, () => {
+      describe('response', () => {
+
+        // output the ids of triggered rules to the screen.
+        describe('triggered rules', () => {
+          // if rules were triggered show them in the output
+          if (ruleIds.length > 0) {
+            ruleIds.forEach(function (ruleId) {
+              it(`rule id: ${ruleId}`, () => {
+                assert.isTrue(true);
+              });
+            });
+          } else {
+            it('none', () => {
+              assert.isEmpty(ruleIds);
+            });
+          }
+        });
 
         describe('appetite', () => {
           if (expectInAppetite) {

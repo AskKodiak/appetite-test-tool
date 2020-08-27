@@ -16,7 +16,6 @@
         "${workspaceFolder}/test"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": [
         "<node_internals>/**"
       ]

@@ -1,4 +1,5 @@
 const csv = require('csvtojson'),
+      colors = require('colors'),
       config = (() => {
         var obj;
 
@@ -146,7 +147,7 @@ var validateTest = (test) => {
           i = 0;
 
       // eslint-disable-next-line no-console
-      console.info(`checking ${rows} rows. please stand by.\n`);
+      console.info(`\nchecking ${colors.green(rows)} rows. please stand by.\n`);
 
       // start the progress bar with a total value of 200 and start value of 0
       progressBar.start(rows, 0);

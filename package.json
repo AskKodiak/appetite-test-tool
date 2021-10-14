@@ -13,14 +13,14 @@
   "author": "mike@askkodiak.com",
   "license": "MIT",
   "dependencies": {
-    "ask-kodiak-sdk": "^2.0.3",
-    "boolean": "^3.0.1",
-    "chai": "^4.2.0",
-    "cli-progress": "^3.8.2",
+    "ask-kodiak-sdk": "^3.0.1",
+    "boolean": "^3.1.4",
+    "chai": "^4.3.4",
+    "cli-progress": "^3.9.1",
     "colors": "^1.4.0",
     "csvtojson": "^2.0.10",
-    "eslint": "^7.7.0",
-    "joi": "^17.2.0",
-    "mocha": "^8.1.1"
+    "eslint": "^8.0.1",
+    "joi": "^17.4.2",
+    "mocha": "^9.1.2"
   }
 }

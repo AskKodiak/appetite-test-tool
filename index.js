@@ -23,11 +23,11 @@ const csv = require('csvtojson'),
       pid = config.pid,
       url = config.url,
       app = config.app || 'https://app.askkodiak.com', // web app base url to build links in results
-      init = (() => { // eslint-disable-line no-unused-vars
+      init = (async () => { // eslint-disable-line no-unused-vars
         if (url) {
-          ak.init(gid, key, url); // init ask kodiak api with url
+          await ak.init(gid, key, url); // init ask kodiak api with url
         } else {
-          ak.init(gid, key); // init ask kodiak api
+          await ak.init(gid, key); // init ask kodiak api
         }
 
       })(),
@@ -148,8 +148,8 @@ var validateTest = (test) => {
       const setOpts = (() => { // eslint-disable-line no-unused-vars
               setApiOpts(test);
             })(),
-            productsForCodeResults = await ak.productsForCode(test.code, test.apiOpts), // render product in list given these conditions.
-            productResults = await ak.getProduct(pid, test.apiOpts); // render product in singleton view under these conditions. will help us identify rules that eliminated the product from former calls
+            productsForCodeResults = await ak.get(`products/class-code/naics/${test.code}`, test.apiOpts), // render product in list given these conditions.
+            productResults = await ak.get(`product/${pid}`, test.apiOpts); // render product in singleton view under these conditions. will help us identify rules that eliminated the product from former calls
 
       return {
         forCode: productsForCodeResults,

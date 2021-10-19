@@ -117,6 +117,7 @@ var validateTest = (test) => {
             'tiv': 'tiv',
             'locations': 'locations',
             'buildings': 'buildings',
+            'vehicles': 'vehicles',
             'squareFootage': 'squareFootage',
             'buildingAge': 'buildingAge',
             'yearsInBusiness': 'yearsInBusiness',
